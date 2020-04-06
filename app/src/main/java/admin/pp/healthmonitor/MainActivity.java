@@ -1,73 +1,71 @@
 package admin.pp.healthmonitor;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
-import android.content.Intent;
+import android.widget.Toast;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.lang.Exception;
 
-public class MainActivity extends AppCompatActivity {
+//import javax.inject.Inject;
 
-    private EditText Name;
-    private EditText Password;
-    private Button Login;
+public class MainActivity extends AppCompatActivity implements LoginActivity.View {
 
+    LoginActivity.Presenter presenter;
+    private EditText name;
+    private EditText password;
+    private Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Name = (EditText)findViewById(R.id.etCosts);
-        Password = (EditText)findViewById(R.id.etPassword);
-        Login = (Button)findViewById(R.id.btnPayment);
-
-        Login.setOnClickListener(new View.OnClickListener() {
+        //((App) getApplication()).getComponent().inject(this);
+        name = (EditText) findViewById(R.id.name);
+        password = (EditText) findViewById(R.id.etPassword);
+        login = (Button) findViewById(R.id.btnPayment);
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                validate(Name.toString(), Password.toString());
+            public void onClick(View view) {
+                presenter.loginButtonClicked();
+                Intent myIntent = new Intent(MainActivity.this,  SecondActivity.class);
+                MainActivity.this.startActivity(myIntent);
             }
         });
-
     }
-
-    private void validate(String userName, String userPassword){
-
-        if((userName.equals("Jan")) && (userPassword.equals("Kowalski"))){
-
-            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-            startActivity(intent);
-
-            try {
-                String url = "127.0.0.1";
-                String gmail = "https://store.steampowered.com/";
-
-                Engine http = new Engine();
-
-                // make sure cookies is turn on
-                //CookieHandler.setDefault(new CookieManager());
-
-                // 1. Send a "GET" request, so that you can extract the form's data.
-                String page = http.GetPageContent(url);
-                String postParams = http.getFormParams(page, "username@gmail.com", "password");
-
-                // 2. Construct above post's content and then send a POST request for
-                // authentication
-                http.sendPost(url, postParams);
-
-                // 3. success then go to gmail.
-                String result = http.GetPageContent(gmail);
-                System.out.println(result);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-
-        }
+    /*
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setView(this);
+        presenter.getCurrentUser();
+    }*/
+    @Override
+    public String getFirstName() {
+        return name.getText().toString();
     }
-
-
+    @Override
+    public String getLastName() {
+        return password.getText().toString();
+    }
+    @Override
+    public void showInputError() {
+        Toast.makeText(this, "First Name or last name cannot be empty", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void setFirstName(String firstName) {
+        this.name.setText(firstName);
+    }
+    @Override
+    public void setLastName(String password) {
+        this.password.setText(password);
+    }
+    @Override
+    public void showUserSavedMessage() {
+        Toast.makeText(this, "User saved successfully", Toast.LENGTH_SHORT).show();
+    }
 }

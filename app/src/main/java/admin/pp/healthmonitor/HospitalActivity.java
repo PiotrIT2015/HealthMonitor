@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.os.Environment;
+import android.widget.Toast;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
@@ -24,6 +26,7 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
 
     private Button register;
     private EditText name, surname, pesel, historia;
+    PatientActivity.Presenter presenter;
 
     private Socket client;
     private FileInputStream fileInputStream;
@@ -31,7 +34,7 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
     private OutputStream outputStream;
     int port=0;
 
-    MySQL baza = new MySQL();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void init(){
+
 
         register = (Button)findViewById(R.id.register);
         name = (EditText)findViewById(R.id.name);
@@ -55,113 +59,50 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view){
 
         System.out.println("Write CSV file:");
-        Print(writeCsvFile(name.getText().toString(), surname.getText().toString(),pesel.getText().toString(), historia.getText().toString()));
+        presenter.Print(presenter.writeCsvFile(name.getText().toString(), surname.getText().toString(), historia.getText().toString()));
 
 
     }
 
-    public File writeCsvFile (String name2, String surname2, String pesel2, String historia2) throws NumberFormatException{
 
-        //Delimiter used in CSV file
-        final String COMMA_DELIMITER = ",";
-        final String NEW_LINE_SEPARATOR = "\n";
-
-        //CSV file header
-        final String FILE_HEADER = "name,surname,pesel,historia";
-
-        Patient kartoteka1 = new Patient(name2, surname2, Integer.parseInt(pesel2), historia2);
-
-
-        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
-        FileWriter writer = null;
-        File file=null;
-        file = new File(exportDir, "Patient.csv");
-
-        try {
-
-            file.createNewFile();
-            writer = new FileWriter(file);
-
-
-            writer.append(FILE_HEADER.toString());
-
-
-            writer.append(NEW_LINE_SEPARATOR);
-
-            writer.append(kartoteka1.getFirstName());
-            baza.insert(kartoteka1.getFirstName());
-            writer.append(COMMA_DELIMITER);
-            writer.append(kartoteka1.getLastName());
-            baza.insert(kartoteka1.getLastName());
-            writer.append(COMMA_DELIMITER);
-            writer.append(kartoteka1.getHistory());
-            baza.insert(kartoteka1.getHistory());
-            writer.append(COMMA_DELIMITER);
-            writer.append(String.valueOf(kartoteka1.getPesel()));
-            baza.insert(String.valueOf(kartoteka1.getPesel()));
-            writer.append(NEW_LINE_SEPARATOR);
-
-
-
-
-            System.out.println("CSV file was created successfully !!!");
-
-        } catch (Exception e) {
-            System.out.println("Error in CsvFileWriter !!!");
-            e.printStackTrace();
-        } finally {
-
-            try {
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                System.out.println("Error while flushing/closing fileWriter !!!");
-                e.printStackTrace();
-            }
-
-        }
-
-        return file;
+    public String getFirstName() {
+        return name.getText().toString();
     }
 
-    void Print(File file){
+    public String getLastName() {
+        return surname.getText().toString();
+    }
 
-        //create file instance
-        //port=Integer.parseInt(etPort.getText().toString());
-        // File file = new File("/mnt/sdcard/bluetooth/AnyFile.txt");
-        try
-        {
+    public String getPesel() {
+        return pesel.getText().toString();
+    }
 
-            //client = new Socket(etIp.getText().toString(), port);
-            client = new Socket("127.0.0.1",8080);
+    public String gethistory() {
+        return historia.getText().toString();
+    }
 
-            byte[] mybytearray = new byte[(int) file.length()]; //create a byte array to file
+    public void showInputError() {
+        Toast.makeText(this, "First Name or last name cannot be empty", Toast.LENGTH_SHORT).show();
+    }
 
-            fileInputStream = new FileInputStream((File)file);
-            bufferedInputStream = new BufferedInputStream(fileInputStream);
+    public void setFirstName(String firstName) {
+        this.name.setText(firstName);
+    }
 
-            bufferedInputStream.read(mybytearray, 0, mybytearray.length); //read the file
+    public void setLastName(String password) {
+        this.surname.setText(password);
+    }
 
-            outputStream = client.getOutputStream();
+    public void setPesel(int pesel) {
+        this.name.setText(pesel);
+    }
 
-            outputStream.write(mybytearray, 0, mybytearray.length); //write file to the output stream byte by byte
-            outputStream.flush();
-            bufferedInputStream.close();
-            outputStream.close();
-            client.close();
+    public void sethistory(String history) {
+        this.surname.setText(history);
+    }
 
-
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void showUserSavedMessage() {
+        Toast.makeText(this, "User saved successfully", Toast.LENGTH_SHORT).show();
     }
 }
 
