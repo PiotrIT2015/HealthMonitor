@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class SecondActivity extends AppCompatActivity{
 
@@ -35,8 +37,11 @@ public class SecondActivity extends AppCompatActivity{
             @Override
             public void onClick(View v)
             {
-                Intent browsIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drive.google.com/drive/folders/11QHxL2HeqolZqzlV_rkWNSB3HCYy6cjy"));
-                startActivity(browsIntent2);
+                String path="https://drive.google.com/drive/folders/11QHxL2HeqolZqzlV_rkWNSB3HCYy6cjy";
+                Bitmap source = BitmapFactory.decodeFile(path);
+                int size = Math.min(source.getWidth(), source.getHeight());
+                int x = (source.getWidth() - size) / 2;
+                int y = (source.getHeight() - size) / 2;
             }
         });
         health=(Button)findViewById(R.id.health);
