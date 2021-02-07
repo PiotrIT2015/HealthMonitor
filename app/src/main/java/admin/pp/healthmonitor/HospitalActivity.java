@@ -7,7 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.os.Environment;
 import android.widget.Toast;
-
+import android.content.Intent;
+import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
@@ -22,9 +26,9 @@ import java.net.UnknownHostException;
 
 
 
-public class HospitalActivity extends AppCompatActivity implements View.OnClickListener {
+public class HospitalActivity extends AppCompatActivity {
 
-    private Button register;
+    private Button register, call;
     private EditText name, surname, pesel, historia;
     PatientActivity.Presenter presenter;
 
@@ -46,23 +50,55 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
 
     private void init(){
 
-
+        call = (Button)findViewById(R.id.call);
         register = (Button)findViewById(R.id.register);
         name = (EditText)findViewById(R.id.name);
         surname = (EditText)findViewById(R.id.surname);
         pesel = (EditText)findViewById(R.id.pesel);
         historia = (EditText)findViewById(R.id.history);
-        register.setOnClickListener(this);
+
+        call.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                String url = "https://api.whatsapp.com/send?phone="+112;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+
+
+
+            public void onClick(View view) {
+
+                PackageManager pm=getPackageManager();
+                try {
+
+                    Intent waIntent = new Intent(Intent.ACTION_SEND);
+                    waIntent.setType("text/plain");
+                    String text = name.getText().toString()+","+ surname.getText().toString()+","+ historia.getText().toString();
+
+                    PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                    //Check if package exists or not. If not then code
+                    //in catch block will be called
+                    waIntent.setPackage("com.whatsapp");
+
+                    waIntent.putExtra(Intent.EXTRA_TEXT, text);
+                    startActivity(Intent.createChooser(waIntent, "Share with"));
+
+                } catch (NameNotFoundException e) {
+                    System.out.println( "WhatsApp not Installed");
+                }
+
+            }
+
+
+        });
+
     }
 
-    @Override
-    public void onClick(View view){
-
-        System.out.println("Write CSV file:");
-        presenter.Print(presenter.writeCsvFile(name.getText().toString(), surname.getText().toString(), historia.getText().toString()));
-
-
-    }
 
 
     public String getFirstName() {
@@ -105,6 +141,7 @@ public class HospitalActivity extends AppCompatActivity implements View.OnClickL
         Toast.makeText(this, "User saved successfully", Toast.LENGTH_SHORT).show();
     }
 }
+
 
 
 

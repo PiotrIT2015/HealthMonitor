@@ -134,4 +134,18 @@
         android:layout_toLeftOf="@+id/surname"
         android:text="Register" />
 
+    <Button
+        android:id="@+id/call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="543dp"
+        android:layout_marginEnd="176dp"
+        android:layout_marginBottom="140dp"
+        android:text="CALL" />
+
 </RelativeLayout>
