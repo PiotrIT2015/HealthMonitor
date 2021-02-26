@@ -106,7 +106,7 @@ public class SecondActivity extends AppCompatActivity{
             {
                 try{
                     String fileName = "mem.jpg";
-                    String website = "http://tutorialspoint.com/java_dip/images/"+fileName;
+                    String website = "http://prochnicki.yum.pl/images/"+fileName;
 
                     System.out.println("Downloading File From: " + website);
 
