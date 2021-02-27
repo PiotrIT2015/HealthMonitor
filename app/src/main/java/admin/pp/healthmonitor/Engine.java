@@ -35,10 +35,8 @@ public class Engine {
     Engine(){
 
     }
-
     private List<String> cookies;
     private HttpsURLConnection conn;
-
     private final String USER_AGENT = "Mozilla/5.0";
     /*
         public static void main(String[] args) throws Exception {
@@ -88,50 +86,39 @@ public class Engine {
         // Set payer details
         Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
-
         // Set redirect URLs
         RedirectUrls redirectUrls = new RedirectUrls();
         redirectUrls.setCancelUrl("http://localhost:3000/cancel");
         redirectUrls.setReturnUrl("http://localhost:3000/process");
-
         // Set payment details
         Details details = new Details();
         details.setShipping("1");
         details.setSubtotal("5");
         details.setTax("1");
-
         // Payment amount
         Amount amount = new Amount();
         amount.setCurrency("USD");
         // Total must be equal to sum of shipping, tax and subtotal.
         amount.setTotal("7");
         amount.setDetails(details);
-
         // Transaction information
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
-        transaction
-                .setDescription("This is the payment transaction description.");
-
+        transaction.setDescription("This is the payment transaction description.");
         // Add transaction to a list
         List<Transaction> transactions = new ArrayList<Transaction>();
         transactions.add(transaction);
-
         // Add payment details
         Payment payment = new Payment();
         payment.setIntent("sale");
         payment.setPayer(payer);
         payment.setRedirectUrls(redirectUrls);
         payment.setTransactions(transactions);
-
-
     }
 
     public void sendPost(String url, String postParams) throws Exception {
-
         URL obj = new URL(url);
         conn = (HttpsURLConnection) obj.openConnection();
-
         // Acts like a browser
         conn.setUseCaches(false);
         conn.setRequestMethod("POST");
@@ -147,44 +134,34 @@ public class Engine {
         conn.setRequestProperty("Referer", "https://store.steampowered.com/login/?redir=login%2F&redir_ssl=1");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
-
         conn.setDoOutput(true);
         conn.setDoInput(true);
-
         // Send post request
         DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
         wr.writeBytes(postParams);
         wr.flush();
         wr.close();
-
         int responseCode = conn.getResponseCode();
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + postParams);
         System.out.println("Response Code : " + responseCode);
-
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
         // System.out.println(response.toString());
-
     }
 
     public String GetPageContent(String url) throws Exception {
-
         URL obj = new URL(url);
         conn = (HttpsURLConnection) obj.openConnection();
-
         // default is GET
         conn.setRequestMethod("GET");
-
         conn.setUseCaches(false);
-
         // act like a browser
         conn.setRequestProperty("User-Agent", USER_AGENT);
         conn.setRequestProperty("Accept",
@@ -198,31 +175,23 @@ public class Engine {
         int responseCode = conn.getResponseCode();
         System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
-
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
-
         // Get the response cookies
         setCookies(conn.getHeaderFields().get("Set-Cookie"));
-
         return response.toString();
-
     }
 
     public String getFormParams(String html, String username, String password)
             throws UnsupportedEncodingException {
-
         System.out.println("Extracting form's data...");
-
         Document doc = Jsoup.parse(html);
-
         // Google form id
         Element loginform = doc.getElementById("gaia_loginform");
         Elements inputElements = loginform.getElementsByTag("input");
@@ -230,14 +199,12 @@ public class Engine {
         for (Element inputElement : inputElements) {
             String key = inputElement.attr("name");
             String value = inputElement.attr("value");
-
             if (key.equals("Email"))
                 value = username;
             else if (key.equals("Passwd"))
                 value = password;
             paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
         }
-
         // build parameters list
         StringBuilder result = new StringBuilder();
         for (String param : paramList) {
@@ -253,11 +220,9 @@ public class Engine {
     public List<String> getCookies() {
         return cookies;
     }
-
     public void setCookies(List<String> cookies) {
         this.cookies = cookies;
     }
-
 }
 
 

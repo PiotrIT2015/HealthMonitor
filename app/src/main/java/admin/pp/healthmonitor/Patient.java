@@ -9,7 +9,6 @@ public class Patient {
 
     public Patient(String firstName, String lastName, int pesel,
                    String history) {
-
         this.firstName = firstName;
         this.lastName = lastName;
         this.pesel = pesel;

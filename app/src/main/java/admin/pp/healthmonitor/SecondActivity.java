@@ -37,7 +37,6 @@ public class SecondActivity extends AppCompatActivity{
         {
             @Override
             public void onClick(View v) {
-
                 String connectionString =
                         "jdbc:sqlserver://sqlserverapp.database.windows.net:1433;"
                                 + "database=database1;"
@@ -53,21 +52,16 @@ public class SecondActivity extends AppCompatActivity{
                 Statement statement = null;
                 ResultSet resultSet = null;
                 PreparedStatement prepsInsertProduct = null;
-
                 try {
                     connection = DriverManager.getConnection(connectionString);
-
                     // Create and execute an SELECT SQL prepared statement.
                     String insertSql = "SELECT music FROM db";
-
                     prepsInsertProduct = connection.prepareStatement(
                             insertSql,
                             Statement.RETURN_GENERATED_KEYS);
                     prepsInsertProduct.execute();
-
                     // Retrieve the generated key from the insert.
                     resultSet = prepsInsertProduct.getGeneratedKeys();
-
                     // Print the ID of the inserted row.
                     while (resultSet.next()) {
                         Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(resultSet.getString(1)));
@@ -93,7 +87,6 @@ public class SecondActivity extends AppCompatActivity{
                         connection.close();
                     } catch (Exception e) {
                     }
-
                 }
             }
         });
@@ -107,24 +100,18 @@ public class SecondActivity extends AppCompatActivity{
                 try{
                     String fileName = "mem.jpg";
                     String website = "http://prochnicki.yum.pl/images/"+fileName;
-
                     System.out.println("Downloading File From: " + website);
-
                     URL url = new URL(website);
                     InputStream inputStream = url.openStream();
                     OutputStream outputStream = new FileOutputStream(fileName);
                     byte[] buffer = new byte[2048];
-
                     int length = 0;
-
                     while ((length = inputStream.read(buffer)) != -1) {
                         System.out.println("Buffer Read of length: " + length);
                         outputStream.write(buffer, 0, length);
                     }
-
                     inputStream.close();
                     outputStream.close();
-
                 } catch(Exception e) {
                     System.out.println("Exception: " + e.getMessage());
                 }
