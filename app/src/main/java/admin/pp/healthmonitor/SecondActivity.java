@@ -115,9 +115,9 @@ public class SecondActivity extends AppCompatActivity{
             {
                 try{
                     String fileName = "mem.jpg";
-                    String website = "cloud.pp/images"+fileName;
+                    String website = "cloudpp.com/images"+fileName;
                     System.out.println("Downloading File From: " + website);
-                    InputStream inputStream = downloadFile("cloud.pp");
+                    InputStream inputStream = downloadFile("cloudpp.com");
                     OutputStream outputStream = new FileOutputStream(fileName);
                     byte[] buffer = new byte[2048];
                     int length = 0;
